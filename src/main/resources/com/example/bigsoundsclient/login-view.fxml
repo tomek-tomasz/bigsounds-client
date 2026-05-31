@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.bigsoundsclient.LoginController"
+      spacing="16" alignment="CENTER"
+      style="-fx-background-color: #f0f2f5;">
+
+    <padding><Insets top="50" right="60" bottom="50" left="60"/></padding>
+
+    <VBox alignment="CENTER" spacing="4">
+        <Label text="🎵 BigSounds"
+               style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1db954;"/>
+        <Label text="Zaloguj się do swojego konta"
+               style="-fx-font-size: 13px; -fx-text-fill: #555555;"/>
+    </VBox>
+
+    <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10;
+                               -fx-border-color: #dde1e7; -fx-border-radius: 10;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 3);">
+        <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+        <Label text="Nazwa użytkownika"
+               style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+        <TextField fx:id="nameField" promptText="np. meloman_99"
+                   style="-fx-background-color: #f8f9fa; -fx-text-fill: #222;
+                          -fx-prompt-text-fill: #aaa; -fx-border-color: #ced4da;
+                          -fx-border-radius: 6; -fx-background-radius: 6;
+                          -fx-padding: 9 12 9 12; -fx-font-size: 13px;"/>
+
+        <Label text="Hasło"
+               style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+        <PasswordField fx:id="passwordField" promptText="Wpisz hasło"
+                       style="-fx-background-color: #f8f9fa; -fx-text-fill: #222;
+                              -fx-prompt-text-fill: #aaa; -fx-border-color: #ced4da;
+                              -fx-border-radius: 6; -fx-background-radius: 6;
+                              -fx-padding: 9 12 9 12; -fx-font-size: 13px;"/>
+
+        <Label fx:id="errorLabel" text="" wrapText="true"
+               style="-fx-text-fill: #c0392b; -fx-font-size: 12px;"/>
+
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Button fx:id="loginBtn" text="Zaloguj się" onAction="#handleLogin"
+                    style="-fx-background-color: #1db954; -fx-text-fill: white; -fx-font-weight: bold;
+                           -fx-border-radius: 6; -fx-background-radius: 6;
+                           -fx-padding: 9 28 9 28; -fx-font-size: 13px; -fx-cursor: hand;"/>
+            <Button fx:id="registerBtn" text="Zarejestruj się" onAction="#handleRegister"
+                    style="-fx-background-color: white; -fx-text-fill: #444;
+                           -fx-border-color: #ced4da; -fx-border-radius: 6; -fx-background-radius: 6;
+                           -fx-padding: 9 20 9 20; -fx-font-size: 13px; -fx-cursor: hand;"/>
+        </HBox>
+    </VBox>
+</VBox>
