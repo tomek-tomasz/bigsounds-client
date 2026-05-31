@@ -1,6 +1,8 @@
-package com.example.bigsoundsclient;
+package com.example.bigsoundsclient.controllers;
 
-import com.google.gson.JsonObject;
+import com.example.bigsoundsclient.ApiClient;
+import com.example.bigsoundsclient.AuthState;
+import com.example.bigsoundsclient.BigSoundsApplication;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

@@ -4,7 +4,7 @@
 <?import javafx.geometry.Insets?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.bigsoundsclient.LoginController"
+      fx:controller="com.example.bigsoundsclient.controllers.LoginController"
       spacing="16" alignment="CENTER"
       style="-fx-background-color: #f0f2f5;">
 

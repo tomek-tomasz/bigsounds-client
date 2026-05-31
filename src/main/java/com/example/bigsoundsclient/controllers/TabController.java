@@ -1,5 +1,6 @@
 package com.example.bigsoundsclient;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.application.Platform;
@@ -18,7 +19,7 @@ import java.util.function.Consumer;
 
 public abstract class TabController {
 
-    public void refresh() {}
+    // ─── ASYNC ───────────────────────────────────────────────────────────────
 
     @FunctionalInterface
     public interface Task { ApiClient.ApiResponse run(); }
@@ -30,6 +31,8 @@ public abstract class TabController {
         CompletableFuture.supplyAsync(task::run)
                 .thenAccept(res -> Platform.runLater(() -> callback.accept(res)));
     }
+
+    // ─── TABLE HELPERS ───────────────────────────────────────────────────────
 
     @FunctionalInterface
     protected interface ValFn { String get(JsonObject o); }
@@ -70,6 +73,8 @@ public abstract class TabController {
                     "-fx-table-cell-border-color: #eee;");
         tv.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
     }
+
+    // ─── JSON HELPERS ────────────────────────────────────────────────────────
 
     protected ObservableList<JsonObject> toList(JsonElement el) {
         List<JsonObject> list = new ArrayList<>();
