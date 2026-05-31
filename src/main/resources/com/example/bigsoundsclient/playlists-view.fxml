@@ -11,7 +11,6 @@
     <Label text="Moje Playlisty"
            style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
 
-    <!-- Tworzenie nowej playlisty -->
     <HBox spacing="10" alignment="CENTER_LEFT"
           style="-fx-background-color: white; -fx-background-radius: 8;
                  -fx-border-color: #dde1e7; -fx-border-radius: 8; -fx-padding: 12;">
@@ -32,12 +31,10 @@
                        -fx-padding: 7 16 7 16; -fx-cursor: hand; -fx-font-size: 12px;"/>
     </HBox>
 
-    <!-- Lista playlist -->
     <TableView fx:id="playlistsTable" prefHeight="300"
                style="-fx-background-color: white; -fx-border-color: #dde1e7;
                       -fx-border-radius: 8; -fx-background-radius: 8;"/>
 
-    <!-- Nagłówek sekcji utworów + dodawanie -->
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label fx:id="playlistSongsLabel" text=""
                style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1db954;" HBox.hgrow="ALWAYS"/>
@@ -54,7 +51,6 @@
                 visible="false" managed="false"/>
     </HBox>
 
-    <!-- Utwory wybranej playlisty -->
     <TableView fx:id="playlistSongsTable" prefHeight="260"
                style="-fx-background-color: white; -fx-border-color: #dde1e7;
                       -fx-border-radius: 8; -fx-background-radius: 8;"

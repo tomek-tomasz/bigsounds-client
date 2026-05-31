@@ -49,4 +49,7 @@ public class HistoryController extends TabController implements Initializable {
         }
         return list.isEmpty() ? "—" : String.join(", ", list);
     }
+
+    @Override
+    public void refresh() { loadHistory(); }
 }

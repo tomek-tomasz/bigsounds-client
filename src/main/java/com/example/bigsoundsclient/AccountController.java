@@ -44,6 +44,9 @@ public class AccountController extends TabController implements Initializable {
         profileBox.getChildren().add(row);
     }
 
+    @Override
+    public void refresh() { loadProfile(); }
+
     @FXML
     private void handleRefreshSpotify() {
         accountResponse.setText("Odświeżanie…");

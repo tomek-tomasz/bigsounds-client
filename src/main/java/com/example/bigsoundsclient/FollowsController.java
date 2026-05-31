@@ -59,4 +59,7 @@ public class FollowsController extends TabController implements Initializable {
             )
         );
     }
+
+    @Override
+    public void refresh() { loadFollows(); }
 }

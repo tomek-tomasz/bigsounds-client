@@ -37,4 +37,7 @@ public class SongsController extends TabController implements Initializable {
             songsTable.setItems(toList(res.data()));
         });
     }
+
+    @Override
+    public void refresh() { loadSongs(); }
 }

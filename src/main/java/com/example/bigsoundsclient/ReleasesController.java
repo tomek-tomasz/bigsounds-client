@@ -38,4 +38,7 @@ public class ReleasesController extends TabController implements Initializable {
             releasesTable.setItems(toList(res.data()));
         });
     }
+
+    @Override
+    public void refresh() { loadReleases(); }
 }

@@ -36,4 +36,7 @@ public class ArtistsController extends TabController implements Initializable {
             artistsTable.setItems(toList(res.data()));
         });
     }
+
+    @Override
+    public void refresh() { loadArtists(); }
 }
