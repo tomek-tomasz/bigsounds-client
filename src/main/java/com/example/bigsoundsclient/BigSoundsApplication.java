@@ -20,7 +20,7 @@ public class BigSoundsApplication extends Application {
     public static void showLogin() throws Exception {
         FXMLLoader loader = new FXMLLoader(
                 BigSoundsApplication.class.getResource("login-view.fxml"));
-        primaryStage.setScene(new Scene(loader.load(), 420, 300));
+        primaryStage.setScene(new Scene(loader.load(), 520, 420));
         primaryStage.setResizable(false);
     }
 

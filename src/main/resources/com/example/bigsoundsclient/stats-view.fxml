@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.bigsoundsclient.StatsController"
+      spacing="12" style="-fx-background-color: #f0f2f5;">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <Label text="Statystyki" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+
+    <HBox spacing="12" alignment="CENTER_LEFT"
+          style="-fx-background-color: white; -fx-background-radius: 8;
+                 -fx-border-color: #dde1e7; -fx-border-radius: 8; -fx-padding: 12;">
+        <Label text="Od:" style="-fx-text-fill: #333; -fx-font-size: 13px;"/>
+        <DatePicker fx:id="statsFrom" promptText="od" style="-fx-background-color: #f8f9fa;"/>
+        <Label text="Do:" style="-fx-text-fill: #333; -fx-font-size: 13px;"/>
+        <DatePicker fx:id="statsTo" promptText="do" style="-fx-background-color: #f8f9fa;"/>
+        <Button fx:id="loadStatsBtn" text="Załaduj" onAction="#loadStats"
+                style="-fx-background-color: #1db954; -fx-text-fill: white; -fx-font-weight: bold;
+                       -fx-border-radius: 6; -fx-background-radius: 6;
+                       -fx-padding: 7 20 7 20; -fx-cursor: hand; -fx-font-size: 12px;"/>
+    </HBox>
+
+    <HBox fx:id="statsCards" spacing="12" alignment="CENTER_LEFT"/>
+
+    <Label text="Top Utwory" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
+    <TableView fx:id="topSongsTable" prefHeight="200"
+               style="-fx-background-color: white; -fx-border-color: #dde1e7;
+                      -fx-border-radius: 8; -fx-background-radius: 8;"/>
+
+    <Label text="Top Artyści" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
+    <TableView fx:id="topArtistsTable" prefHeight="200"
+               style="-fx-background-color: white; -fx-border-color: #dde1e7;
+                      -fx-border-radius: 8; -fx-background-radius: 8;"/>
+
+    <Label text="Top Wydania" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
+    <TableView fx:id="topReleasesTable" prefHeight="200"
+               style="-fx-background-color: white; -fx-border-color: #dde1e7;
+                      -fx-border-radius: 8; -fx-background-radius: 8;"/>
+</VBox>

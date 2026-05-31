@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.bigsoundsclient.AccountController"
+      spacing="12" style="-fx-background-color: #f0f2f5;">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <Label text="Moje konto" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+
+    <VBox fx:id="profileBox" spacing="10"
+          style="-fx-background-color: white; -fx-background-radius: 8;
+                 -fx-border-color: #dde1e7; -fx-border-radius: 8; -fx-padding: 18;"/>
+
+    <Label text="Akcje Spotify"
+           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
+
+    <HBox spacing="10">
+        <Button text="Odśwież token Spotify" onAction="#handleRefreshSpotify"
+                style="-fx-background-color: #f8f9fa; -fx-text-fill: #333;
+                       -fx-border-color: #ced4da; -fx-border-radius: 6; -fx-background-radius: 6;
+                       -fx-padding: 8 18 8 18; -fx-cursor: hand; -fx-font-size: 12px;"/>
+        <Button text="Synchronizuj streamy" onAction="#handleSyncStreams"
+                style="-fx-background-color: #1db954; -fx-text-fill: white; -fx-font-weight: bold;
+                       -fx-border-radius: 6; -fx-background-radius: 6;
+                       -fx-padding: 8 18 8 18; -fx-cursor: hand; -fx-font-size: 12px;"/>
+    </HBox>
+
+    <TextArea fx:id="accountResponse" prefRowCount="6" editable="false"
+              style="-fx-background-color: #f8f9fa; -fx-text-fill: #222;
+                     -fx-font-family: monospace; -fx-font-size: 12px;
+                     -fx-border-color: #dde1e7; -fx-border-radius: 6; -fx-background-radius: 6;"/>
+</VBox>

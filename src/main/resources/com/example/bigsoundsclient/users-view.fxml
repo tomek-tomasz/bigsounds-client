@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.bigsoundsclient.UsersController"
+      spacing="12" style="-fx-background-color: #f0f2f5;">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <Label text="Użytkownicy"
+           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Button fx:id="refreshUsersBtn" text="⟳  Odśwież" onAction="#loadUsers"
+                style="-fx-background-color: #1db954; -fx-text-fill: white; -fx-font-weight: bold;
+                       -fx-border-radius: 6; -fx-background-radius: 6;
+                       -fx-padding: 7 16 7 16; -fx-cursor: hand; -fx-font-size: 12px;"/>
+    </HBox>
+
+    <TableView fx:id="usersTable" prefHeight="540"
+               style="-fx-background-color: white; -fx-border-color: #dde1e7;
+                      -fx-border-radius: 8; -fx-background-radius: 8;"/>
+</VBox>
