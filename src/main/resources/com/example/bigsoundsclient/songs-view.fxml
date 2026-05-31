@@ -10,14 +10,9 @@
 
     <Label text="Utwory" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
 
-    <HBox spacing="8" alignment="CENTER_LEFT">
-        <Button fx:id="refreshSongsBtn" text="⟳  Odśwież" onAction="#loadSongs"
-                style="-fx-background-color: #1db954; -fx-text-fill: white; -fx-font-weight: bold;
-                       -fx-border-radius: 6; -fx-background-radius: 6;
-                       -fx-padding: 7 16 7 16; -fx-cursor: hand; -fx-font-size: 12px;"/>
-    </HBox>
+    <HBox fx:id="paginationBar" spacing="8" alignment="CENTER_LEFT"/>
 
-    <TableView fx:id="songsTable" prefHeight="520"
+    <TableView fx:id="songsTable" VBox.vgrow="ALWAYS" prefHeight="520"
                style="-fx-background-color: white; -fx-border-color: #dde1e7;
                       -fx-border-radius: 8; -fx-background-radius: 8;"/>
 </VBox>

@@ -7,7 +7,6 @@
             fx:controller="com.example.bigsoundsclient.MainController"
             style="-fx-background-color: #f0f2f5;">
 
-    <!-- TOP BAR -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="12"
               style="-fx-background-color: white; -fx-border-color: #dde1e7; -fx-border-width: 0 0 1 0;
@@ -25,67 +24,67 @@
         </HBox>
     </top>
 
-    <!-- TABS -->
     <center>
-        <TabPane tabClosingPolicy="UNAVAILABLE" style="-fx-background-color: #f0f2f5; -fx-tab-min-width: 90px;">
+        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE"
+                 style="-fx-background-color: #f0f2f5; -fx-tab-min-width: 90px;">
 
             <Tab text="Utwory">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
-                    <fx:include source="songs-view.fxml"/>
+                    <fx:include fx:id="songs" source="songs-view.fxml"/>
                 </ScrollPane>
             </Tab>
 
             <Tab text="Wydania">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
-                    <fx:include source="releases-view.fxml"/>
+                    <fx:include fx:id="releases" source="releases-view.fxml"/>
                 </ScrollPane>
             </Tab>
 
             <Tab text="Artyści">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
-                    <fx:include source="artists-view.fxml"/>
+                    <fx:include fx:id="artists" source="artists-view.fxml"/>
                 </ScrollPane>
             </Tab>
 
             <Tab text="Playlisty">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
-                    <fx:include source="playlists-view.fxml"/>
+                    <fx:include fx:id="playlists" source="playlists-view.fxml"/>
                 </ScrollPane>
             </Tab>
 
             <Tab text="Polubienia">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
-                    <fx:include source="likes-view.fxml"/>
+                    <fx:include fx:id="likes" source="likes-view.fxml"/>
                 </ScrollPane>
             </Tab>
 
             <Tab text="Obserwowani">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
-                    <fx:include source="follows-view.fxml"/>
+                    <fx:include fx:id="follows" source="follows-view.fxml"/>
                 </ScrollPane>
             </Tab>
 
             <Tab text="Statystyki">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
-                    <fx:include source="stats-view.fxml"/>
+                    <fx:include fx:id="stats" source="stats-view.fxml"/>
                 </ScrollPane>
             </Tab>
 
             <Tab text="Historia">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
-                    <fx:include source="history-view.fxml"/>
+                    <fx:include fx:id="history" source="history-view.fxml"/>
                 </ScrollPane>
             </Tab>
 
             <Tab text="Użytkownicy">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
-                    <fx:include source="users-view.fxml"/>
+                    <fx:include fx:id="users" source="users-view.fxml"/>
                 </ScrollPane>
             </Tab>
 
             <Tab text="Konto">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
-                    <fx:include source="account-view.fxml"/>
+                    <fx:include fx:id="account" source="account-view.fxml"/>
                 </ScrollPane>
             </Tab>
 

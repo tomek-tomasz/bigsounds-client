@@ -57,4 +57,7 @@ public class AccountController extends TabController implements Initializable {
         async(() -> ApiClient.post("/api/users/sync-streams", null),
               res -> accountResponse.setText(res.data().toString()));
     }
+
+    @Override
+    public void refresh() { loadProfile(); }
 }

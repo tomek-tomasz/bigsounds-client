@@ -19,6 +19,9 @@ import java.util.function.Consumer;
 
 public abstract class TabController {
 
+    public void refresh() {}
+
+
     // ─── ASYNC ───────────────────────────────────────────────────────────────
 
     @FunctionalInterface
@@ -77,9 +80,14 @@ public abstract class TabController {
     // ─── JSON HELPERS ────────────────────────────────────────────────────────
 
     protected ObservableList<JsonObject> toList(JsonElement el) {
+        if (el == null) return FXCollections.observableArrayList();
+        JsonElement array = el;
+        if (el.isJsonObject() && el.getAsJsonObject().has("data")) {
+            array = el.getAsJsonObject().get("data");
+        }
         List<JsonObject> list = new ArrayList<>();
-        if (el != null && el.isJsonArray()) {
-            for (JsonElement e : el.getAsJsonArray()) {
+        if (array.isJsonArray()) {
+            for (JsonElement e : array.getAsJsonArray()) {
                 if (e.isJsonObject()) list.add(e.getAsJsonObject());
             }
         }

@@ -121,4 +121,7 @@ public class PlaylistsController extends TabController implements Initializable 
         if ("—".equals(s) || s.length() < 19) return s;
         return s.substring(0, 10) + " " + s.substring(11, 19);
     }
+
+    @Override
+    public void refresh() { loadPlaylists(); }
 }

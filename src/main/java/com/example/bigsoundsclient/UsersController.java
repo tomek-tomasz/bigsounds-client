@@ -36,4 +36,7 @@ public class UsersController extends TabController implements Initializable {
             usersTable.setItems(toList(res.data()));
         });
     }
+
+    @Override
+    public void refresh() { loadUsers(); }
 }

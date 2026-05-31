@@ -1,38 +1,43 @@
 package com.example.bigsoundsclient;
 
 import com.google.gson.JsonObject;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class HistoryController extends TabController implements Initializable {
+public class HistoryController extends PagedTabController implements Initializable {
 
     @FXML private TableView<JsonObject> historyTable;
-    @FXML private Button refreshHistoryBtn;
+    @FXML private HBox paginationBar;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         historyTable.getColumns().addAll(
-                strCol("Data i czas",  o -> fmtDateTime(o, "stream_timestamp"), 160),
-                strCol("Utwór",        o -> str(o, "song_title"),               200),
-                strCol("Artyści",      o -> streamArtists(o),                   180),
-                strCol("Wydanie",      o -> str(o, "release_title"),             180),
-                strCol("Format",       o -> str(o, "release_format"),             80)
+                strCol("Data i czas", o -> fmtDateTime(o, "stream_timestamp"), 160),
+                strCol("Utwór",       o -> str(o, "song_title"),               200),
+                strCol("Artyści",     o -> streamArtists(o),                   180),
+                strCol("Wydanie",     o -> str(o, "release_title"),             180),
+                strCol("Format",      o -> str(o, "release_format"),             80)
         );
         applyStyle(historyTable);
+        paginationBar.getChildren().setAll(buildPaginationBar().getChildren());
     }
 
-    @FXML
-    private void loadHistory() {
-        refreshHistoryBtn.setDisable(true);
-        async(() -> ApiClient.get("/api/streams"), res -> {
-            refreshHistoryBtn.setDisable(false);
-            historyTable.setItems(toList(res.data()));
-        });
+    @Override
+    protected void loadPage(int page, int limit) {
+        async(() -> ApiClient.get("/api/streams?page=" + page + "&limit=" + limit),
+              res -> applyPage(res.data()));
+    }
+
+    @Override
+    protected void updateTable(ObservableList<JsonObject> items) {
+        historyTable.setItems(items);
     }
 
     private String fmtDateTime(JsonObject o, String key) {
@@ -43,7 +48,7 @@ public class HistoryController extends TabController implements Initializable {
 
     private String streamArtists(JsonObject o) {
         if (!o.has("artists") || !o.get("artists").isJsonArray()) return "—";
-        var list = new java.util.ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         for (var e : o.get("artists").getAsJsonArray()) {
             if (e.isJsonPrimitive()) list.add(e.getAsString());
         }
