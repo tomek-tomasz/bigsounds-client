@@ -4,7 +4,7 @@
 <?import javafx.geometry.Insets?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.bigsoundsclient.MainController"
+            fx:controller="com.example.bigsoundsclient.controllers.MainController"
             style="-fx-background-color: #f0f2f5;">
 
     <!-- TOP BAR -->

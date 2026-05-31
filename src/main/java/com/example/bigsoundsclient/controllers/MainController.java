@@ -1,5 +1,8 @@
-package com.example.bigsoundsclient;
+package com.example.bigsoundsclient.controllers;
 
+import com.example.bigsoundsclient.ApiClient;
+import com.example.bigsoundsclient.AuthState;
+import com.example.bigsoundsclient.BigSoundsApplication;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;

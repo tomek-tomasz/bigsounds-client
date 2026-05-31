@@ -1,6 +1,6 @@
-package com.example.bigsoundsclient;
+package com.example.bigsoundsclient.controllers;
 
-import com.google.gson.JsonArray;
+import com.example.bigsoundsclient.ApiClient;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.application.Platform;
