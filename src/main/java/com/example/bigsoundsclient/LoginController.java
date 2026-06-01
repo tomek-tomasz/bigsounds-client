@@ -34,8 +34,12 @@ public class LoginController {
             setLoading(false);
             if (res.ok()) {
                 try {
-                    String token = res.data().getAsJsonObject().get("token").getAsString();
-                    AuthState.getInstance().setToken(token);
+                    JsonObject body = res.data().getAsJsonObject();
+                    AuthState.getInstance().setToken(body.get("token").getAsString());
+                    if (body.has("user") && body.get("user").isJsonObject()) {
+                        AuthState.getInstance().setUserId(
+                                body.get("user").getAsJsonObject().get("id").getAsInt());
+                    }
                 } catch (Exception e) {
                     errorLabel.setText("Błąd parsowania tokenu: " + e.getMessage());
                     return;

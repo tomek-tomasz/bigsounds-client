@@ -33,7 +33,12 @@ public class UsersController extends TabController implements Initializable {
         refreshUsersBtn.setDisable(true);
         async(() -> ApiClient.get("/api/users"), res -> {
             refreshUsersBtn.setDisable(false);
-            usersTable.setItems(toList(res.data()));
+            int myId = AuthState.getInstance().getUserId();
+            var all = toList(res.data());
+            if (myId >= 0) {
+                all.removeIf(o -> o.has("id") && o.get("id").getAsInt() == myId);
+            }
+            usersTable.setItems(all);
         });
     }
 
