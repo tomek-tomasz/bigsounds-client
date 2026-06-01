@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.bigsoundsclient.RecommendationsController"
+      spacing="12" style="-fx-background-color: #f0f2f5;">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <Label text="Rekomendacje dla Ciebie"
+           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+    <Label text="Utwory lubiane przez użytkowników o podobnym guście, których jeszcze nie polubiłeś."
+           style="-fx-font-size: 13px; -fx-text-fill: #666;"/>
+
+    <HBox spacing="8" alignment="CENTER_LEFT">
+        <Button fx:id="refreshRecsBtn" text="⟳  Odśwież" onAction="#loadRecommendations"
+                style="-fx-background-color: #1db954; -fx-text-fill: white; -fx-font-weight: bold;
+                       -fx-border-radius: 6; -fx-background-radius: 6;
+                       -fx-padding: 7 16 7 16; -fx-cursor: hand; -fx-font-size: 12px;"/>
+    </HBox>
+
+    <TableView fx:id="recsTable" VBox.vgrow="ALWAYS" prefHeight="520"
+               style="-fx-background-color: white; -fx-border-color: #dde1e7;
+                      -fx-border-radius: 8; -fx-background-radius: 8;"/>
+</VBox>

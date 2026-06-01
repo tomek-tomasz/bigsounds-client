@@ -14,6 +14,13 @@
           style="-fx-background-color: white; -fx-background-radius: 8;
                  -fx-border-color: #dde1e7; -fx-border-radius: 8; -fx-padding: 18;"/>
 
+    <Label text="Moje oceny"
+           style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
+
+    <TableView fx:id="reviewsTable" prefHeight="240"
+               style="-fx-background-color: white; -fx-border-color: #dde1e7;
+                      -fx-border-radius: 8; -fx-background-radius: 8;"/>
+
     <Label text="Akcje Spotify"
            style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #444;"/>
 
@@ -28,7 +35,7 @@
                        -fx-padding: 8 18 8 18; -fx-cursor: hand; -fx-font-size: 12px;"/>
     </HBox>
 
-    <TextArea fx:id="accountResponse" prefRowCount="6" editable="false"
+    <TextArea fx:id="accountResponse" prefRowCount="4" editable="false"
               style="-fx-background-color: #f8f9fa; -fx-text-fill: #222;
                      -fx-font-family: monospace; -fx-font-size: 12px;
                      -fx-border-color: #dde1e7; -fx-border-radius: 6; -fx-background-radius: 6;"/>

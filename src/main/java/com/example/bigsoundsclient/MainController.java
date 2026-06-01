@@ -25,8 +25,10 @@ public class MainController implements Initializable {
     @FXML private FollowsController   followsController;
     @FXML private StatsController     statsController;
     @FXML private HistoryController   historyController;
-    @FXML private UsersController     usersController;
-    @FXML private AccountController   accountController;
+    @FXML private UsersController           usersController;
+    @FXML private RecommendationsController recommendationsController;
+    @FXML private FeedController            feedController;
+    @FXML private AccountController         accountController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -45,6 +47,8 @@ public class MainController implements Initializable {
         controllers.add(statsController);
         controllers.add(historyController);
         controllers.add(usersController);
+        controllers.add(recommendationsController);
+        controllers.add(feedController);
         controllers.add(accountController);
 
         tabPane.getSelectionModel().selectedIndexProperty().addListener((obs, oldIdx, newIdx) -> {

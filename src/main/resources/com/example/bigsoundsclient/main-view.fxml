@@ -82,6 +82,18 @@
                 </ScrollPane>
             </Tab>
 
+            <Tab text="Rekomendacje">
+                <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
+                    <fx:include fx:id="recommendations" source="recommendations-view.fxml"/>
+                </ScrollPane>
+            </Tab>
+
+            <Tab text="Feed">
+                <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
+                    <fx:include fx:id="feed" source="feed-view.fxml"/>
+                </ScrollPane>
+            </Tab>
+
             <Tab text="Konto">
                 <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5;">
                     <fx:include fx:id="account" source="account-view.fxml"/>

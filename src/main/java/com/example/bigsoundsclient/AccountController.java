@@ -3,8 +3,7 @@ package com.example.bigsoundsclient;
 import com.google.gson.JsonObject;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -15,9 +14,18 @@ public class AccountController extends TabController implements Initializable {
 
     @FXML private VBox profileBox;
     @FXML private TextArea accountResponse;
+    @FXML private TableView<JsonObject> reviewsTable;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        reviewsTable.getColumns().addAll(
+                strCol("Typ",     o -> fmtType(o),        80),
+                strCol("Tytuł",   o -> str(o, "item_title"), 230),
+                strCol("Ocena",   o -> str(o, "score") + " / 100", 90),
+                strCol("Data",    o -> dateStr(o, "date_added"), 100),
+                actionCol("🗑 Usuń", o -> deleteReview(o), 80)
+        );
+        applyStyle(reviewsTable);
         loadProfile();
     }
 
@@ -32,6 +40,21 @@ public class AccountController extends TabController implements Initializable {
                 addRow("Dołączył/a", dateStr(o, "date_joined"));
             }
         });
+        loadReviews();
+    }
+
+    private void loadReviews() {
+        async(() -> ApiClient.get("/api/reviews/mine"),
+              res -> reviewsTable.setItems(toList(res.data())));
+    }
+
+    private void deleteReview(JsonObject review) {
+        String type   = str(review, "type");
+        int    itemId = review.get("item_id").getAsInt();
+        String endpoint = "song".equals(type)
+                ? "/api/reviews/songs/"   + itemId
+                : "/api/reviews/releases/" + itemId;
+        async(() -> ApiClient.delete(endpoint), r -> loadReviews());
     }
 
     private void addRow(String key, String value) {
@@ -42,6 +65,10 @@ public class AccountController extends TabController implements Initializable {
         v.setStyle("-fx-text-fill: #111; -fx-font-size: 13px; -fx-font-weight: bold;");
         row.getChildren().addAll(k, v);
         profileBox.getChildren().add(row);
+    }
+
+    private String fmtType(JsonObject o) {
+        return "song".equals(str(o, "type")) ? "🎵 Utwór" : "💿 Wydanie";
     }
 
     @FXML
