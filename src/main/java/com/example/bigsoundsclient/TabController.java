@@ -71,6 +71,46 @@ public abstract class TabController {
         return col;
     }
 
+    @SuppressWarnings("unchecked")
+    protected TableColumn<JsonObject, String> likeToggleCol(
+            String likeEndpoint, String unlikeEndpoint, Runnable onReload) {
+        TableColumn<JsonObject, String> col = new TableColumn<>("");
+        col.setPrefWidth(115);
+        col.setCellFactory(tc -> new TableCell<>() {
+            private final Button btn = new Button();
+            {
+                btn.setStyle("-fx-cursor: hand; -fx-border-radius: 4; -fx-background-radius: 4; " +
+                             "-fx-padding: 3 10 3 10; -fx-font-size: 11px;");
+                btn.setOnAction(e -> {
+                    JsonObject item = getTableView().getItems().get(getIndex());
+                    if (item == null) return;
+                    boolean liked = item.has("liked") && item.get("liked").getAsBoolean();
+                    String endpoint = liked ? unlikeEndpoint + item.get("id").getAsInt()
+                                            :   likeEndpoint + item.get("id").getAsInt();
+                    String method = liked ? "DELETE" : "POST";
+                    btn.setDisable(true);
+                    async(() -> "DELETE".equals(method)
+                                    ? ApiClient.delete(endpoint)
+                                    : ApiClient.post(endpoint, null),
+                         r -> { btn.setDisable(false); onReload.run(); });
+                });
+            }
+            @Override protected void updateItem(String s, boolean empty) {
+                super.updateItem(s, empty);
+                if (empty) { setGraphic(null); return; }
+                JsonObject item = getTableView().getItems().get(getIndex());
+                boolean liked = item != null && item.has("liked") && item.get("liked").getAsBoolean();
+                btn.setText(liked ? "💔 Przestań lubić" : "♥ Polub");
+                btn.setStyle("-fx-cursor: hand; -fx-border-radius: 4; -fx-background-radius: 4; " +
+                             "-fx-padding: 3 10 3 10; -fx-font-size: 11px; " +
+                             (liked ? "-fx-background-color: #fde8e8; -fx-text-fill: #c0392b; -fx-border-color: #f5b7b1;"
+                                    : "-fx-background-color: #f0f0f0; -fx-text-fill: #333; -fx-border-color: #ccc;"));
+                setGraphic(btn);
+            }
+        });
+        return col;
+    }
+
     protected void applyStyle(TableView<?> tv) {
         tv.setStyle("-fx-background-color: white; -fx-control-inner-background: white; " +
                     "-fx-table-cell-border-color: #eee;");
