@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,6 +39,72 @@ public abstract class TabController {
 
     // ─── TABLE HELPERS ───────────────────────────────────────────────────────
 
+    // Sortuje numerycznie (double), wyświetla "—" dla null
+    @SuppressWarnings("unchecked")
+    protected TableColumn<JsonObject, Number> scoreCol(String header, String jsonKey, double width) {
+        TableColumn<JsonObject, Number> col = new TableColumn<>(header);
+        col.setCellValueFactory(cd -> {
+            JsonObject o = cd.getValue();
+            if (!o.has(jsonKey) || o.get(jsonKey).isJsonNull()) return new SimpleDoubleProperty(-1);
+            try { return new SimpleDoubleProperty(o.get(jsonKey).getAsDouble()); }
+            catch (Exception e) { return new SimpleDoubleProperty(-1); }
+        });
+        col.setCellFactory(tc -> new TableCell<>() {
+            @Override protected void updateItem(Number n, boolean empty) {
+                super.updateItem(n, empty);
+                setText(empty || n == null || n.doubleValue() < 0 ? null
+                        : String.format("%.0f", n.doubleValue()));
+            }
+        });
+        col.setPrefWidth(width);
+        return col;
+    }
+
+    // Sortuje po ms (numerycznie), wyświetla M:SS
+    @SuppressWarnings("unchecked")
+    protected TableColumn<JsonObject, Number> durationCol(String header, String msKey, double width) {
+        TableColumn<JsonObject, Number> col = new TableColumn<>(header);
+        col.setCellValueFactory(cd -> {
+            JsonObject o = cd.getValue();
+            if (!o.has(msKey) || o.get(msKey).isJsonNull()) return new SimpleLongProperty(-1);
+            try { return new SimpleLongProperty(o.get(msKey).getAsLong()); }
+            catch (Exception e) { return new SimpleLongProperty(-1); }
+        });
+        col.setCellFactory(tc -> new TableCell<>() {
+            @Override protected void updateItem(Number n, boolean empty) {
+                super.updateItem(n, empty);
+                if (empty || n == null || n.longValue() < 0) { setText(null); return; }
+                long ms = n.longValue();
+                setText(String.format("%d:%02d", ms / 60000, (ms % 60000) / 1000));
+            }
+        });
+        col.setPrefWidth(width);
+        return col;
+    }
+
+    // Sortuje ms numerycznie, wyświetla "Xh Ym"
+    @SuppressWarnings("unchecked")
+    protected TableColumn<JsonObject, Number> hoursCol(String header, String msKey, double width) {
+        TableColumn<JsonObject, Number> col = new TableColumn<>(header);
+        col.setCellValueFactory(cd -> {
+            JsonObject o = cd.getValue();
+            if (!o.has(msKey) || o.get(msKey).isJsonNull()) return new SimpleLongProperty(-1);
+            try { return new SimpleLongProperty(o.get(msKey).getAsLong()); }
+            catch (Exception e) { return new SimpleLongProperty(-1); }
+        });
+        col.setCellFactory(tc -> new TableCell<>() {
+            @Override protected void updateItem(Number n, boolean empty) {
+                super.updateItem(n, empty);
+                if (empty || n == null || n.longValue() < 0) { setText(null); return; }
+                long ms = n.longValue();
+                long h = ms / 3600000, m = (ms % 3600000) / 60000;
+                setText(h > 0 ? h + "h " + m + "m" : m + "m");
+            }
+        });
+        col.setPrefWidth(width);
+        return col;
+    }
+
     @FunctionalInterface
     protected interface ValFn { String get(JsonObject o); }
 
@@ -44,6 +112,25 @@ public abstract class TabController {
     protected TableColumn<JsonObject, String> strCol(String header, ValFn fn, double width) {
         TableColumn<JsonObject, String> col = new TableColumn<>(header);
         col.setCellValueFactory(cd -> new SimpleStringProperty(fn.get(cd.getValue())));
+        col.setPrefWidth(width);
+        return col;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected TableColumn<JsonObject, Number> numCol(String header, String jsonKey, double width) {
+        TableColumn<JsonObject, Number> col = new TableColumn<>(header);
+        col.setCellValueFactory(cd -> {
+            JsonObject o = cd.getValue();
+            long val = (!o.has(jsonKey) || o.get(jsonKey).isJsonNull()) ? 0L
+                       : o.get(jsonKey).getAsLong();
+            return new SimpleLongProperty(val);
+        });
+        col.setCellFactory(tc -> new TableCell<>() {
+            @Override protected void updateItem(Number n, boolean empty) {
+                super.updateItem(n, empty);
+                setText(empty || n == null ? null : String.valueOf(n.longValue()));
+            }
+        });
         col.setPrefWidth(width);
         return col;
     }
@@ -105,6 +192,53 @@ public abstract class TabController {
                              "-fx-padding: 3 10 3 10; -fx-font-size: 11px; " +
                              (liked ? "-fx-background-color: #fde8e8; -fx-text-fill: #c0392b; -fx-border-color: #f5b7b1;"
                                     : "-fx-background-color: #f0f0f0; -fx-text-fill: #333; -fx-border-color: #ccc;"));
+                setGraphic(btn);
+            }
+        });
+        return col;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected TableColumn<JsonObject, String> followToggleCol(
+            String followEndpoint, String unfollowEndpoint,
+            String followedField) {
+        TableColumn<JsonObject, String> col = new TableColumn<>("");
+        col.setPrefWidth(130);
+        col.setCellFactory(tc -> new TableCell<>() {
+            private final Button btn = new Button();
+            {
+                btn.setStyle("-fx-cursor: hand; -fx-border-radius: 4; -fx-background-radius: 4; " +
+                             "-fx-padding: 3 10 3 10; -fx-font-size: 11px;");
+                btn.setOnAction(e -> {
+                    JsonObject item = getTableView().getItems().get(getIndex());
+                    if (item == null) return;
+                    boolean followed = item.has(followedField) && item.get(followedField).getAsBoolean();
+                    String endpoint = followed
+                            ? unfollowEndpoint + item.get("id").getAsInt()
+                            :   followEndpoint + item.get("id").getAsInt();
+                    btn.setDisable(true);
+                    async(() -> followed ? ApiClient.delete(endpoint) : ApiClient.post(endpoint, null),
+                         r -> {
+                             if (r.ok()) {
+                                 item.addProperty(followedField, !followed);
+                                 getTableView().refresh();
+                             }
+                             btn.setDisable(false);
+                         });
+                });
+            }
+            @Override protected void updateItem(String s, boolean empty) {
+                super.updateItem(s, empty);
+                if (empty) { setGraphic(null); return; }
+                JsonObject item = getTableView().getItems().get(getIndex());
+                boolean followed = item != null && item.has(followedField)
+                                   && item.get(followedField).getAsBoolean();
+                btn.setText(followed ? "✓ Obserwujesz" : "+ Obserwuj");
+                btn.setStyle("-fx-cursor: hand; -fx-border-radius: 4; -fx-background-radius: 4; " +
+                             "-fx-padding: 3 10 3 10; -fx-font-size: 11px; " +
+                             (followed
+                                ? "-fx-background-color: #e8f5e9; -fx-text-fill: #2e7d32; -fx-border-color: #a5d6a7;"
+                                : "-fx-background-color: #f0f0f0; -fx-text-fill: #333; -fx-border-color: #ccc;"));
                 setGraphic(btn);
             }
         });

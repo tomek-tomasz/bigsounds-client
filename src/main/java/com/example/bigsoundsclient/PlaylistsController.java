@@ -28,7 +28,7 @@ public class PlaylistsController extends TabController implements Initializable 
     public void initialize(URL location, ResourceBundle resources) {
         playlistsTable.getColumns().addAll(
                 strCol("Nazwa",      o -> str(o, "name"),       220),
-                strCol("Utwory",     o -> str(o, "song_count"),  70),
+                numCol("Utwory", "song_count", 70),
                 strCol("Widoczność", o -> bool(o, "is_private") ? "🔒 Prywatna" : "🌐 Publiczna", 120),
                 actionCol("Pokaż",   o -> showPlaylistSongs(o),  80),
                 actionCol("🗑 Usuń", o -> {
@@ -41,7 +41,7 @@ public class PlaylistsController extends TabController implements Initializable 
         playlistSongsTable.getColumns().addAll(
                 strCol("Tytuł",   o -> str(o, "title"),          200),
                 strCol("Artyści", o -> artists(o),               180),
-                strCol("Czas",    o -> fmtMs(o, "duration_ms"),   80),
+                durationCol("Czas", "duration_ms", 80),
                 strCol("Dodano",  o -> fmtDateTime(o, "added_at"), 150),
                 strCol("Przez",   o -> str(o, "added_by"),         110),
                 actionCol("Usuń", o -> {

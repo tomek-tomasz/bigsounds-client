@@ -18,12 +18,14 @@ public class SongsController extends PagedTabController implements Initializable
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         songsTable.getColumns().addAll(
-                strCol("ID",         o -> str(o, "id"),             50),
-                strCol("Tytuł",      o -> str(o, "title"),          200),
-                strCol("Artyści",    o -> artists(o),               170),
-                strCol("Czas",       o -> fmtMs(o, "duration_ms"),   70),
-                strCol("Avg",        o -> fmtScore(o, "avg_score"),   60),
-                strCol("Moja",       o -> fmtScore(o, "my_score"),    55),
+                strCol("ID",      o -> str(o, "id"),            45),
+                strCol("Tytuł",   o -> str(o, "title"),        200),
+                strCol("Artyści", o -> artists(o),             170),
+                durationCol("Czas",    "duration_ms",           65),
+                numCol("♥",  "like_count",                      45),
+                numCol("▶",  "stream_count",                    45),
+                scoreCol("Avg",  "avg_score",                   55),
+                scoreCol("Moja", "my_score",                    50),
                 likeToggleCol("/api/likes/songs/", "/api/likes/songs/", this::refresh)
         );
         applyStyle(songsTable);
@@ -32,9 +34,8 @@ public class SongsController extends PagedTabController implements Initializable
         songsTable.setRowFactory(tv -> {
             var row = new javafx.scene.control.TableRow<JsonObject>();
             row.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && !row.isEmpty()) {
+                if (e.getClickCount() == 2 && !row.isEmpty())
                     DetailDialog.showSong(row.getItem());
-                }
             });
             return row;
         });
@@ -49,11 +50,5 @@ public class SongsController extends PagedTabController implements Initializable
     @Override
     protected void updateTable(ObservableList<JsonObject> items) {
         songsTable.setItems(items);
-    }
-
-    private String fmtScore(JsonObject o, String key) {
-        if (!o.has(key) || o.get(key).isJsonNull()) return "—";
-        try { return String.format("%.0f", o.get(key).getAsDouble()); }
-        catch (Exception e) { return "—"; }
     }
 }

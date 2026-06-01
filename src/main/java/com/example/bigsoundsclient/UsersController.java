@@ -8,6 +8,9 @@ import javafx.scene.control.TableView;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class UsersController extends TabController implements Initializable {
 
@@ -17,13 +20,12 @@ public class UsersController extends TabController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         usersTable.getColumns().addAll(
-                strCol("Użytkownik",    o -> str(o, "name"),           200),
-                strCol("Dołączył/a",   o -> dateStr(o, "date_joined"), 110),
-                strCol("Zgodność",     o -> compatStr(o),               90),
-                actionCol("+ Obserwuj", o -> {
-                    int id = o.get("id").getAsInt();
-                    async(() -> ApiClient.post("/api/follows/users/" + id, null), r -> {});
-                }, 110),
+                strCol("Użytkownik",  o -> str(o, "name"),           200),
+                strCol("Dołączył/a", o -> dateStr(o, "date_joined"), 110),
+                strCol("Zgodność",   o -> compatStr(o),               90),
+                followToggleCol(
+                        "/api/follows/users/", "/api/follows/users/",
+                        "_followed"),
                 actionCol("🔍 Zgodność", o -> loadCompat(o), 110)
         );
         applyStyle(usersTable);
@@ -32,13 +34,31 @@ public class UsersController extends TabController implements Initializable {
     @FXML
     private void loadUsers() {
         refreshUsersBtn.setDisable(true);
-        async(() -> ApiClient.get("/api/users"), res -> {
-            refreshUsersBtn.setDisable(false);
-            int myId = AuthState.getInstance().getUserId();
-            var all = toList(res.data());
-            if (myId >= 0) all.removeIf(o -> o.has("id") && o.get("id").getAsInt() == myId);
-            usersTable.setItems(all);
-        });
+        // Pobieramy równolegle listę wszystkich i obserwowanych
+        async(() -> ApiClient.get("/api/users"), resUsers ->
+            async(() -> ApiClient.get("/api/follows/users"), resFollowed -> {
+                refreshUsersBtn.setDisable(false);
+                int myId = AuthState.getInstance().getUserId();
+
+                // Zbiór id obserwowanych użytkowników
+                Set<Integer> followedIds = StreamSupport
+                        .stream(resFollowed.data().isJsonArray()
+                                ? resFollowed.data().getAsJsonArray().spliterator()
+                                : new java.util.ArrayList<com.google.gson.JsonElement>().spliterator(), false)
+                        .filter(com.google.gson.JsonElement::isJsonObject)
+                        .map(e -> e.getAsJsonObject().get("id").getAsInt())
+                        .collect(Collectors.toSet());
+
+                var all = toList(resUsers.data());
+                if (myId >= 0) all.removeIf(o -> o.has("id") && o.get("id").getAsInt() == myId);
+
+                // Wzbogać każdy wiersz o pole _followed
+                all.forEach(o -> o.addProperty("_followed",
+                        followedIds.contains(o.get("id").getAsInt())));
+
+                usersTable.setItems(all);
+            })
+        );
     }
 
     private void loadCompat(JsonObject user) {
@@ -52,8 +72,8 @@ public class UsersController extends TabController implements Initializable {
     }
 
     private void showCompatDialog(String userName, JsonObject data) {
-        String score  = data.has("compatibility_score") ?
-                String.format("%.0f / 100", data.get("compatibility_score").getAsDouble()) : "—";
+        String score  = data.has("compatibility_score")
+                ? String.format("%.0f / 100", data.get("compatibility_score").getAsDouble()) : "—";
         String common = str(data, "common_liked_songs");
         String total  = str(data, "total_liked_songs");
         String diff   = data.has("avg_score_difference") && !data.get("avg_score_difference").isJsonNull()

@@ -18,13 +18,13 @@ public class ArtistsController extends PagedTabController implements Initializab
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         artistsTable.getColumns().addAll(
-                strCol("ID",        o -> str(o, "id"),          50),
-                strCol("Pseudonim", o -> str(o, "stage_name"), 240),
-                strCol("Gatunek",   o -> str(o, "genre"),      140),
-                actionCol("+ Obserwuj", o -> {
-                    int id = o.get("id").getAsInt();
-                    async(() -> ApiClient.post("/api/follows/artists/" + id, null), r -> {});
-                }, 110)
+                strCol("ID",          o -> str(o, "id"),            45),
+                strCol("Pseudonim",   o -> str(o, "stage_name"),   195),
+                numCol("Utwory",      "song_count",                  65),
+                numCol("Wydania",     "release_count",               65),
+                numCol("Obserwujący", "follower_count",              90),
+                numCol("▶ Streamy",   "stream_count",                80),
+                followToggleCol("/api/follows/artists/", "/api/follows/artists/", "followed")
         );
         applyStyle(artistsTable);
         paginationBar.getChildren().setAll(buildPaginationBar().getChildren());

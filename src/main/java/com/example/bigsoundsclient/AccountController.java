@@ -21,7 +21,7 @@ public class AccountController extends TabController implements Initializable {
         reviewsTable.getColumns().addAll(
                 strCol("Typ",     o -> fmtType(o),        80),
                 strCol("Tytuł",   o -> str(o, "item_title"), 230),
-                strCol("Ocena",   o -> str(o, "score") + " / 100", 90),
+                scoreCol("Ocena", "score", 90),
                 strCol("Data",    o -> dateStr(o, "date_added"), 100),
                 actionCol("🗑 Usuń", o -> deleteReview(o), 80)
         );

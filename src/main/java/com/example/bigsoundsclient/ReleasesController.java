@@ -18,13 +18,15 @@ public class ReleasesController extends PagedTabController implements Initializa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         releasesTable.getColumns().addAll(
-                strCol("ID",         o -> str(o, "id"),                  50),
-                strCol("Tytuł",      o -> str(o, "title"),               180),
-                strCol("Artyści",    o -> artists(o),                    150),
-                strCol("Format",     o -> str(o, "format"),               70),
-                strCol("Data",       o -> dateStr(o, "release_date"),      90),
-                strCol("Avg",        o -> fmtScore(o, "avg_score"),         60),
-                strCol("Moja",       o -> fmtScore(o, "my_score"),          55),
+                strCol("ID",      o -> str(o, "id"),                  45),
+                strCol("Tytuł",   o -> str(o, "title"),              180),
+                strCol("Artyści", o -> artists(o),                   150),
+                strCol("Format",  o -> str(o, "format"),              70),
+                strCol("Data",    o -> dateStr(o, "release_date"),     90),
+                numCol("♥",  "like_count",                            45),
+                numCol("▶",  "stream_count",                          45),
+                scoreCol("Avg",  "avg_score",                         55),
+                scoreCol("Moja", "my_score",                          50),
                 likeToggleCol("/api/likes/releases/", "/api/likes/releases/", this::refresh)
         );
         applyStyle(releasesTable);
@@ -33,9 +35,8 @@ public class ReleasesController extends PagedTabController implements Initializa
         releasesTable.setRowFactory(tv -> {
             var row = new javafx.scene.control.TableRow<JsonObject>();
             row.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && !row.isEmpty()) {
+                if (e.getClickCount() == 2 && !row.isEmpty())
                     DetailDialog.showRelease(row.getItem());
-                }
             });
             return row;
         });
@@ -50,11 +51,5 @@ public class ReleasesController extends PagedTabController implements Initializa
     @Override
     protected void updateTable(ObservableList<JsonObject> items) {
         releasesTable.setItems(items);
-    }
-
-    private String fmtScore(JsonObject o, String key) {
-        if (!o.has(key) || o.get(key).isJsonNull()) return "—";
-        try { return String.format("%.0f", o.get(key).getAsDouble()); }
-        catch (Exception e) { return "—"; }
     }
 }

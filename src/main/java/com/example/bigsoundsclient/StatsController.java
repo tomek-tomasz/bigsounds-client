@@ -27,30 +27,30 @@ public class StatsController extends TabController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         topSongsTable.getColumns().addAll(
-                strCol("#",          o -> str(o, "_rank"),      40),
-                strCol("Tytuł",      o -> str(o, "title"),     190),
-                strCol("Artyści",    o -> artists(o),          170),
-                strCol("Odsłuchań", o -> str(o, "stream_count"), 100),
-                strCol("Czas",       o -> fmtHours(o, "total_ms"), 80)
+                numCol("#",        "_rank",        40),
+                strCol("Tytuł",    o -> str(o, "title"),  190),
+                strCol("Artyści",  o -> artists(o),       170),
+                numCol("Odsłuchań","stream_count", 100),
+                hoursCol("Czas",   "total_ms",      80)
         );
         applyStyle(topSongsTable);
 
         topArtistsTable.getColumns().addAll(
-                strCol("#",               o -> str(o, "_rank"),       40),
-                strCol("Artysta",         o -> str(o, "stage_name"), 210),
-                strCol("Odsłuchań",      o -> str(o, "stream_count"), 100),
-                strCol("Czas",            o -> fmtHours(o, "total_ms"), 80),
-                strCol("Unikalne utwory", o -> str(o, "unique_songs"), 120)
+                numCol("#",              "_rank",        40),
+                strCol("Artysta",        o -> str(o, "stage_name"), 210),
+                numCol("Odsłuchań",     "stream_count", 100),
+                hoursCol("Czas",        "total_ms",      80),
+                numCol("Unikalne utwory","unique_songs", 120)
         );
         applyStyle(topArtistsTable);
 
         topReleasesTable.getColumns().addAll(
-                strCol("#",         o -> str(o, "_rank"),       40),
-                strCol("Tytuł",     o -> str(o, "title"),      180),
-                strCol("Artyści",   o -> artists(o),           160),
-                strCol("Format",    o -> str(o, "format"),      70),
-                strCol("Odsłuchań",o -> str(o, "stream_count"), 100),
-                strCol("Czas",      o -> fmtHours(o, "total_ms"), 80)
+                numCol("#",        "_rank",        40),
+                strCol("Tytuł",    o -> str(o, "title"),  180),
+                strCol("Artyści",  o -> artists(o),       160),
+                strCol("Format",   o -> str(o, "format"),  70),
+                numCol("Odsłuchań","stream_count", 100),
+                hoursCol("Czas",   "total_ms",      80)
         );
         applyStyle(topReleasesTable);
     }

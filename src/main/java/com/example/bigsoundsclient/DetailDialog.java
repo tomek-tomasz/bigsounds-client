@@ -207,6 +207,8 @@ public class DetailDialog {
             );
         }
         box.getChildren().addAll(
+                infoRow("Polubień",     countStr(o, "like_count")),
+                infoRow("Streamów",     countStr(o, "stream_count")),
                 infoRow("Twoja ocena",  myScore(o)),
                 infoRow("Polubiony",    likedStr(o))
         );
@@ -297,6 +299,12 @@ public class DetailDialog {
         if (!o.has("duration_ms") || o.get("duration_ms").isJsonNull()) return "—";
         long ms = o.get("duration_ms").getAsLong();
         return String.format("%d:%02d", ms / 60000, (ms % 60000) / 1000);
+    }
+
+    private static String countStr(JsonObject o, String key) {
+        if (!o.has(key) || o.get(key).isJsonNull()) return "—";
+        try { return String.format("%,d", o.get(key).getAsLong()); }
+        catch (Exception e) { return "—"; }
     }
 
     private static String myScore(JsonObject o) {

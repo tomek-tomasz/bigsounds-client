@@ -20,7 +20,7 @@ public class LikesController extends TabController implements Initializable {
         likedSongsTable.getColumns().addAll(
                 strCol("Tytuł",    o -> str(o, "title"),          220),
                 strCol("Artyści",  o -> artists(o),               200),
-                strCol("Czas",     o -> fmtMs(o, "duration_ms"),   80),
+                durationCol("Czas", "duration_ms", 80),
                 actionCol("💔 Usuń", o -> {
                     int id = o.get("id").getAsInt();
                     async(() -> ApiClient.delete("/api/likes/songs/" + id), r -> loadLikes());

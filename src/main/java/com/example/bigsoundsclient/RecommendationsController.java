@@ -17,20 +17,25 @@ public class RecommendationsController extends TabController implements Initiali
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         recsTable.getColumns().addAll(
-                strCol("Tytuł",         o -> str(o, "title"),          220),
-                strCol("Artyści",       o -> artists(o),               200),
-                strCol("Czas",          o -> fmtMs(o, "duration_ms"),   80),
-                strCol("Avg score",     o -> fmtScore(o),               80),
-                strCol("Dopasowanie",   o -> str(o, "recommendation_score"), 90),
-                actionCol("♥ Polub", o -> {
-                    int id = o.get("id").getAsInt();
-                    async(() -> ApiClient.post("/api/likes/songs/" + id, null), r -> {});
-                }, 90)
+                strCol("Tytuł",    o -> str(o, "title"),          260),
+                strCol("Artyści",  o -> artists(o),               220),
+                durationCol("Czas","duration_ms",                  75),
+                scoreCol("Avg",    "avg_score",                    60)
         );
         applyStyle(recsTable);
+
+        recsTable.setRowFactory(tv -> {
+            var row = new javafx.scene.control.TableRow<JsonObject>();
+            row.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && !row.isEmpty()) {
+                    DetailDialog.showSong(row.getItem());
+                }
+            });
+            return row;
+        });
     }
 
-    @FXML
+@FXML
     private void loadRecommendations() {
         refreshRecsBtn.setDisable(true);
         async(() -> ApiClient.get("/api/recommendations?limit=50"), res -> {
@@ -41,10 +46,4 @@ public class RecommendationsController extends TabController implements Initiali
 
     @Override
     public void refresh() { loadRecommendations(); }
-
-    private String fmtScore(JsonObject o) {
-        if (!o.has("avg_score") || o.get("avg_score").isJsonNull()) return "—";
-        try { return String.format("%.0f", o.get("avg_score").getAsDouble()); }
-        catch (Exception e) { return "—"; }
-    }
 }
