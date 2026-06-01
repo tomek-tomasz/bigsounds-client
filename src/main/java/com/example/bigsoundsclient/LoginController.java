@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+
 public class LoginController {
 
     @FXML private TextField nameField;
@@ -59,27 +60,11 @@ public class LoginController {
 
     @FXML
     private void handleRegister() {
-        String name = nameField.getText().trim();
-        String password = passwordField.getText();
-        if (name.isEmpty() || password.isEmpty()) {
-            errorLabel.setText("Wypełnij oba pola.");
-            return;
+        try {
+            BigSoundsApplication.showRegister();
+        } catch (Exception e) {
+            errorLabel.setText("Błąd otwarcia rejestracji: " + e.getMessage());
         }
-        setLoading(true);
-        CompletableFuture.supplyAsync(() ->
-                ApiClient.post("/api/users/register", Map.of("name", name, "password", password, "spotifyCode", ""))
-        ).thenAccept(res -> Platform.runLater(() -> {
-            setLoading(false);
-            if (res.ok()) {
-                errorLabel.setStyle("-fx-text-fill: green;");
-                errorLabel.setText("Zarejestrowano! Możesz się zalogować.");
-            } else {
-                errorLabel.setStyle("-fx-text-fill: #e53e3e;");
-                String msg = "Rejestracja nieudana.";
-                try { msg = res.data().getAsJsonObject().get("error").getAsString(); } catch (Exception ignored) {}
-                errorLabel.setText(msg);
-            }
-        }));
     }
 
     private void setLoading(boolean loading) {

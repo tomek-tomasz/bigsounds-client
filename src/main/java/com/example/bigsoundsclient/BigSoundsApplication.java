@@ -24,6 +24,13 @@ public class BigSoundsApplication extends Application {
         primaryStage.setResizable(false);
     }
 
+    public static void showRegister() throws Exception {
+        FXMLLoader loader = new FXMLLoader(
+                BigSoundsApplication.class.getResource("register-view.fxml"));
+        primaryStage.setScene(new Scene(loader.load(), 520, 520));
+        primaryStage.setResizable(false);
+    }
+
     public static void showMain() throws Exception {
         FXMLLoader loader = new FXMLLoader(
                 BigSoundsApplication.class.getResource("main-view.fxml"));

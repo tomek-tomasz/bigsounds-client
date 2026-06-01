@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.bigsoundsclient.RegisterController"
+      spacing="16" alignment="CENTER"
+      style="-fx-background-color: #f0f2f5;">
+
+    <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
+
+    <VBox alignment="CENTER" spacing="4">
+        <Label text="🎵 BigSounds"
+               style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1db954;"/>
+        <Label text="Utwórz nowe konto"
+               style="-fx-font-size: 13px; -fx-text-fill: #555555;"/>
+    </VBox>
+
+    <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10;
+                               -fx-border-color: #dde1e7; -fx-border-radius: 10;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 3);">
+        <padding><Insets top="24" right="24" bottom="24" left="24"/></padding>
+
+        <Label text="Nazwa użytkownika"
+               style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+        <TextField fx:id="nameField" promptText="min. 3 znaki"
+                   style="-fx-background-color: #f8f9fa; -fx-text-fill: #222;
+                          -fx-prompt-text-fill: #aaa; -fx-border-color: #ced4da;
+                          -fx-border-radius: 6; -fx-background-radius: 6;
+                          -fx-padding: 9 12 9 12; -fx-font-size: 13px;"/>
+
+        <Label text="Hasło"
+               style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+        <PasswordField fx:id="passwordField" promptText="Wpisz hasło"
+                       style="-fx-background-color: #f8f9fa; -fx-text-fill: #222;
+                              -fx-prompt-text-fill: #aaa; -fx-border-color: #ced4da;
+                              -fx-border-radius: 6; -fx-background-radius: 6;
+                              -fx-padding: 9 12 9 12; -fx-font-size: 13px;"/>
+
+        <Label text="Powtórz hasło"
+               style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+        <PasswordField fx:id="confirmPasswordField" promptText="Wpisz hasło ponownie"
+                       style="-fx-background-color: #f8f9fa; -fx-text-fill: #222;
+                              -fx-prompt-text-fill: #aaa; -fx-border-color: #ced4da;
+                              -fx-border-radius: 6; -fx-background-radius: 6;
+                              -fx-padding: 9 12 9 12; -fx-font-size: 13px;"/>
+
+        <Label fx:id="statusLabel" text="" wrapText="true"
+               style="-fx-font-size: 12px;"/>
+
+        <VBox spacing="8">
+            <Button fx:id="connectBtn" text="Połącz ze Spotify i zarejestruj"
+                    onAction="#handleConnect" maxWidth="Infinity"
+                    style="-fx-background-color: #1db954; -fx-text-fill: white; -fx-font-weight: bold;
+                           -fx-border-radius: 6; -fx-background-radius: 6;
+                           -fx-padding: 10 20 10 20; -fx-font-size: 13px; -fx-cursor: hand;"/>
+            <Button fx:id="backBtn" text="Powrót do logowania"
+                    onAction="#handleBack" maxWidth="Infinity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #555;
+                           -fx-border-color: #ced4da; -fx-border-radius: 6; -fx-background-radius: 6;
+                           -fx-padding: 8 20 8 20; -fx-font-size: 12px; -fx-cursor: hand;"/>
+        </VBox>
+    </VBox>
+
+    <Label text="Rejestracja wymaga połączenia z kontem Spotify."
+           style="-fx-font-size: 11px; -fx-text-fill: #888;"/>
+</VBox>
