@@ -34,13 +34,11 @@ public class UsersController extends TabController implements Initializable {
     @FXML
     private void loadUsers() {
         refreshUsersBtn.setDisable(true);
-        // Pobieramy równolegle listę wszystkich i obserwowanych
         async(() -> ApiClient.get("/api/users"), resUsers ->
             async(() -> ApiClient.get("/api/follows/users"), resFollowed -> {
                 refreshUsersBtn.setDisable(false);
                 int myId = AuthState.getInstance().getUserId();
 
-                // Zbiór id obserwowanych użytkowników
                 Set<Integer> followedIds = StreamSupport
                         .stream(resFollowed.data().isJsonArray()
                                 ? resFollowed.data().getAsJsonArray().spliterator()
@@ -52,7 +50,6 @@ public class UsersController extends TabController implements Initializable {
                 var all = toList(resUsers.data());
                 if (myId >= 0) all.removeIf(o -> o.has("id") && o.get("id").getAsInt() == myId);
 
-                // Wzbogać każdy wiersz o pole _followed
                 all.forEach(o -> o.addProperty("_followed",
                         followedIds.contains(o.get("id").getAsInt())));
 

@@ -31,13 +31,13 @@ public class HistoryController extends PagedTabController implements Initializab
 
     @Override
     protected void loadPage(int page, int limit) {
-        async(() -> ApiClient.get("/api/streams?page=" + page + "&limit=" + limit),
+        async(() -> ApiClient.get("/api/streams" + pageQs(page, limit)),
               res -> applyPage(res.data()));
     }
 
     @Override
     protected void updateTable(ObservableList<JsonObject> items) {
-        historyTable.setItems(items);
+        setTableItems(historyTable, items);
     }
 
     private String fmtDateTime(JsonObject o, String key) {

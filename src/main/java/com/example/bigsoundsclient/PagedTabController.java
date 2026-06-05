@@ -2,40 +2,167 @@ package com.example.bigsoundsclient;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
+
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class PagedTabController extends TabController {
 
-    protected int currentPage = 1;
-    protected int totalPages  = 1;
-    protected int pageSize    = 25;
+    protected int    currentPage = 1;
+    protected int    totalPages  = 1;
+    protected int    pageSize    = 25;
+    protected String sortField   = null;
+    protected String sortDir     = "DESC";
 
-    private Label pageLabel;
+    private Label  pageLabel;
     private Button prevBtn;
     private Button nextBtn;
+
+    private final Map<TableColumn<JsonObject, ?>, String> sortableColumns   = new IdentityHashMap<>();
+    private final Map<TableColumn<JsonObject, ?>, String> originalHeaders   = new IdentityHashMap<>();
+    private TableColumn<JsonObject, ?> activeSortCol = null;
+    private boolean suppressSort = false;
+    private boolean keepPage     = false;
+
+    // Full data cache — populated once per fetch, sorted/sliced locally.
+    private List<JsonObject> allItems = new ArrayList<>();
+
+    // Single stable ObservableList reused across page changes so JavaFX never resets sort state.
+    private final ObservableList<JsonObject> backingList = FXCollections.observableArrayList();
 
     protected abstract void loadPage(int page, int limit);
 
     @Override
     public void refresh() {
         currentPage = 1;
-        loadPage(currentPage, pageSize);
+        sortField   = null;
+        sortDir     = "DESC";
+        if (activeSortCol != null) {
+            String orig = originalHeaders.get(activeSortCol);
+            if (orig != null) activeSortCol.setText(orig);
+            activeSortCol = null;
+        }
+        loadPage(1, 0);
+    }
+
+    protected void reloadCurrentPage() {
+        keepPage = true;
+        loadPage(1, 0);
+    }
+
+    // Always fetches all records; page/limit args from subclasses are ignored.
+    protected String pageQs(int page, int limit) {
+        return "?limit=9999";
+    }
+
+    protected void registerSort(TableColumn<JsonObject, ?> col, String apiField) {
+        sortableColumns.put(col, apiField);
+        originalHeaders.put(col, col.getText());
+        col.setSortable(true);
+    }
+
+    protected void setTableItems(TableView<JsonObject> table, ObservableList<JsonObject> items) {
+        // Bind table to the stable backing list once; subsequent updates use setAll so JavaFX
+        // never sees a new list and never resets the sort order / sort type on the columns.
+        if (table.getItems() != backingList) {
+            table.setItems(backingList);
+        }
+        suppressSort = true;
+        try {
+            backingList.setAll(items);
+        } finally {
+            suppressSort = false;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void makeSortable(TableView<JsonObject> table) {
+        for (TableColumn<JsonObject, ?> col : table.getColumns()) {
+            if (!sortableColumns.containsKey(col)) {
+                col.setSortable(false);
+            }
+        }
+
+        table.setSortPolicy(tv -> {
+            if (suppressSort) return true;
+
+            // Clear indicator on previously sorted column
+            if (activeSortCol != null) {
+                String orig = originalHeaders.get(activeSortCol);
+                if (orig != null) activeSortCol.setText(orig);
+                activeSortCol = null;
+            }
+
+            if (tv.getSortOrder().isEmpty()) {
+                sortField = null;
+                sortDir   = "DESC";
+            } else {
+                TableColumn<JsonObject, ?> col =
+                        (TableColumn<JsonObject, ?>) tv.getSortOrder().get(0);
+                String field = sortableColumns.get(col);
+                if (field == null) return true;
+                sortField     = field;
+                sortDir       = col.getSortType() == TableColumn.SortType.ASCENDING ? "ASC" : "DESC";
+                activeSortCol = col;
+                String indicator = "ASC".equals(sortDir) ? "  ▲" : "  ▼";
+                col.setText(originalHeaders.getOrDefault(col, col.getText()) + indicator);
+            }
+            currentPage = 1;
+            applySortAndPage();
+            return true;
+        });
     }
 
     protected void applyPage(JsonElement response) {
-        ObservableList<JsonObject> items = toList(response);
-        if (response != null && response.isJsonObject()) {
-            JsonObject meta = response.getAsJsonObject();
-            currentPage = meta.has("page")  ? meta.get("page").getAsInt()  : 1;
-            totalPages  = meta.has("pages") ? meta.get("pages").getAsInt() : 1;
+        allItems = new ArrayList<>(toList(response));
+        if (!keepPage) currentPage = 1;
+        keepPage = false;
+        applySortAndPage();
+    }
+
+    private void applySortAndPage() {
+        List<JsonObject> sorted = new ArrayList<>(allItems);
+
+        if (sortField != null) {
+            final String field = sortField;
+            final boolean asc  = "ASC".equals(sortDir);
+            sorted.sort((a, b) -> {
+                String va = rawStr(a, field);
+                String vb = rawStr(b, field);
+                try {
+                    double da = Double.parseDouble(va);
+                    double db = Double.parseDouble(vb);
+                    return asc ? Double.compare(da, db) : Double.compare(db, da);
+                } catch (NumberFormatException e) {
+                    int cmp = va.compareToIgnoreCase(vb);
+                    return asc ? cmp : -cmp;
+                }
+            });
         }
-        updateTable(items);
+
+        totalPages  = Math.max(1, (sorted.size() + pageSize - 1) / pageSize);
+        currentPage = Math.min(currentPage, totalPages);
+
+        int from = (currentPage - 1) * pageSize;
+        int to   = Math.min(from + pageSize, sorted.size());
+        updateTable(FXCollections.observableArrayList(sorted.subList(from, to)));
         updatePaginationBar();
+    }
+
+    private String rawStr(JsonObject o, String field) {
+        if (o == null || !o.has(field) || o.get(field).isJsonNull()) return "";
+        return o.get(field).getAsString();
     }
 
     protected abstract void updateTable(ObservableList<JsonObject> items);
@@ -53,14 +180,14 @@ public abstract class PagedTabController extends TabController {
         limitBox.setOnAction(e -> {
             pageSize    = limitBox.getValue();
             currentPage = 1;
-            loadPage(currentPage, pageSize);
+            applySortAndPage();
         });
 
         prevBtn.setOnAction(e -> {
-            if (currentPage > 1) loadPage(--currentPage, pageSize);
+            if (currentPage > 1) { currentPage--; applySortAndPage(); }
         });
         nextBtn.setOnAction(e -> {
-            if (currentPage < totalPages) loadPage(++currentPage, pageSize);
+            if (currentPage < totalPages) { currentPage++; applySortAndPage(); }
         });
 
         HBox bar = new HBox(8);

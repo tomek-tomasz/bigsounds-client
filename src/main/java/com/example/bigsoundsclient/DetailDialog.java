@@ -46,14 +46,11 @@ public class DetailDialog {
         content.setStyle("-fx-background-color: #f0f2f5;");
         content.getChildren().add(baseInfo);
 
-        // ── Sekcja oceniania ──────────────────────────────────────────────
         content.getChildren().add(buildRatingSection(reviewsEndpoint, () -> {
-            // po wystawieniu oceny odśwież sekcję recenzji
             int idx = content.getChildren().size() - 1;
             refreshReviews(content, idx, reviewsEndpoint);
         }));
 
-        // ── Sekcja recenzji ───────────────────────────────────────────────
         Label reviewsTitle = new Label("Recenzje");
         reviewsTitle.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;");
         content.getChildren().add(reviewsTitle);
@@ -72,8 +69,6 @@ public class DetailDialog {
         dialog.setScene(new Scene(scroll, 560, 580));
         dialog.show();
     }
-
-    // ── Formularz oceniania ───────────────────────────────────────────────────
 
     private static VBox buildRatingSection(String reviewsEndpoint, Runnable onSuccess) {
         VBox box = new VBox(10);
@@ -139,8 +134,6 @@ public class DetailDialog {
         return box;
     }
 
-    // ── Recenzje ─────────────────────────────────────────────────────────────
-
     private static void loadReviews(VBox reviewsBox, String reviewsEndpoint) {
         CompletableFuture.supplyAsync(() -> ApiClient.get(reviewsEndpoint))
                 .thenAccept(res -> Platform.runLater(() -> {
@@ -187,8 +180,6 @@ public class DetailDialog {
         }
     }
 
-    // ── Budownicze info o obiekcie ────────────────────────────────────────────
-
     private static VBox buildBaseInfo(JsonObject o, boolean isSong) {
         VBox box = new VBox(10);
         box.setStyle(cardStyle());
@@ -214,8 +205,6 @@ public class DetailDialog {
         );
         return box;
     }
-
-    // ── Pomocnicze komponenty UI ──────────────────────────────────────────────
 
     private static HBox infoRow(String key, String value) {
         HBox row = new HBox(12);
@@ -278,8 +267,6 @@ public class DetailDialog {
         return "-fx-background-color: white; -fx-background-radius: 8; " +
                "-fx-border-color: #dde1e7; -fx-border-radius: 8; -fx-padding: 16;";
     }
-
-    // ── Pomocnicze metody danych ──────────────────────────────────────────────
 
     private static String strVal(JsonObject o, String key) {
         if (o == null || !o.has(key) || o.get(key).isJsonNull()) return "—";

@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 
@@ -17,19 +18,29 @@ public class SongsController extends PagedTabController implements Initializable
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        TableColumn<JsonObject, Number> idCol     = numCol("ID",      "id",           45);
+        TableColumn<JsonObject, String> titleCol  = strCol("Tytuł",   o -> str(o, "title"),    200);
+        TableColumn<JsonObject, String> artistCol = strCol("Artyści", o -> artists(o),         170);
+        TableColumn<JsonObject, Number> durCol    = durationCol("Czas", "duration_ms",          65);
+        TableColumn<JsonObject, Number> likeCol   = numCol("♥",  "like_count",                 45);
+        TableColumn<JsonObject, Number> streamCol = numCol("▶",  "stream_count",               45);
+        TableColumn<JsonObject, Number> avgCol    = scoreCol("Avg",  "avg_score",              55);
+        TableColumn<JsonObject, Number> myCol     = scoreCol("Moja", "my_score",               50);
+        TableColumn<JsonObject, String> toggleCol = likeToggleCol(
+                "/api/likes/songs/", "/api/likes/songs/", this::reloadCurrentPage);
+
         songsTable.getColumns().addAll(
-                strCol("ID",      o -> str(o, "id"),            45),
-                strCol("Tytuł",   o -> str(o, "title"),        200),
-                strCol("Artyści", o -> artists(o),             170),
-                durationCol("Czas",    "duration_ms",           65),
-                numCol("♥",  "like_count",                      45),
-                numCol("▶",  "stream_count",                    45),
-                scoreCol("Avg",  "avg_score",                   55),
-                scoreCol("Moja", "my_score",                    50),
-                likeToggleCol("/api/likes/songs/", "/api/likes/songs/", this::refresh)
-        );
+                idCol, titleCol, artistCol, durCol, likeCol, streamCol, avgCol, myCol, toggleCol);
         applyStyle(songsTable);
         paginationBar.getChildren().setAll(buildPaginationBar().getChildren());
+
+        registerSort(idCol,     "id");
+        registerSort(titleCol,  "title");
+        registerSort(durCol,    "duration_ms");
+        registerSort(likeCol,   "like_count");
+        registerSort(streamCol, "stream_count");
+        registerSort(avgCol,    "avg_score");
+        makeSortable(songsTable);
 
         songsTable.setRowFactory(tv -> {
             var row = new javafx.scene.control.TableRow<JsonObject>();
@@ -43,12 +54,12 @@ public class SongsController extends PagedTabController implements Initializable
 
     @Override
     protected void loadPage(int page, int limit) {
-        async(() -> ApiClient.get("/api/songs?page=" + page + "&limit=" + limit),
+        async(() -> ApiClient.get("/api/songs" + pageQs(page, limit)),
               res -> applyPage(res.data()));
     }
 
     @Override
     protected void updateTable(ObservableList<JsonObject> items) {
-        songsTable.setItems(items);
+        setTableItems(songsTable, items);
     }
 }

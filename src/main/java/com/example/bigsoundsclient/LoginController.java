@@ -55,7 +55,13 @@ public class LoginController {
                 try { msg = res.data().getAsJsonObject().get("error").getAsString(); } catch (Exception ignored) {}
                 errorLabel.setText(msg);
             }
-        }));
+        })).exceptionally(e -> {
+            Platform.runLater(() -> {
+                setLoading(false);
+                errorLabel.setText("Błąd połączenia: " + e.getMessage());
+            });
+            return null;
+        });
     }
 
     @FXML

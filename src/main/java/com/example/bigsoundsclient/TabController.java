@@ -24,8 +24,6 @@ public abstract class TabController {
     public void refresh() {}
 
 
-    // ─── ASYNC ───────────────────────────────────────────────────────────────
-
     @FunctionalInterface
     public interface Task { ApiClient.ApiResponse run(); }
 
@@ -37,9 +35,6 @@ public abstract class TabController {
                 .thenAccept(res -> Platform.runLater(() -> callback.accept(res)));
     }
 
-    // ─── TABLE HELPERS ───────────────────────────────────────────────────────
-
-    // Sortuje numerycznie (double), wyświetla "—" dla null
     @SuppressWarnings("unchecked")
     protected TableColumn<JsonObject, Number> scoreCol(String header, String jsonKey, double width) {
         TableColumn<JsonObject, Number> col = new TableColumn<>(header);
@@ -60,7 +55,6 @@ public abstract class TabController {
         return col;
     }
 
-    // Sortuje po ms (numerycznie), wyświetla M:SS
     @SuppressWarnings("unchecked")
     protected TableColumn<JsonObject, Number> durationCol(String header, String msKey, double width) {
         TableColumn<JsonObject, Number> col = new TableColumn<>(header);
@@ -82,7 +76,6 @@ public abstract class TabController {
         return col;
     }
 
-    // Sortuje ms numerycznie, wyświetla "Xh Ym"
     @SuppressWarnings("unchecked")
     protected TableColumn<JsonObject, Number> hoursCol(String header, String msKey, double width) {
         TableColumn<JsonObject, Number> col = new TableColumn<>(header);
@@ -250,8 +243,6 @@ public abstract class TabController {
                     "-fx-table-cell-border-color: #eee;");
         tv.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
     }
-
-    // ─── JSON HELPERS ────────────────────────────────────────────────────────
 
     protected ObservableList<JsonObject> toList(JsonElement el) {
         if (el == null) return FXCollections.observableArrayList();
