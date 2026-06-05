@@ -4,7 +4,7 @@
 <?import javafx.geometry.Insets?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.bigsoundsclient.RecommendationsController"
+      fx:controller="com.example.bigsoundsclient.ui.tabs.RecommendationsController"
       spacing="12" style="-fx-background-color: #f0f2f5;">
     <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
