@@ -35,10 +35,7 @@ public abstract class PagedTabController extends TabController {
     private boolean suppressSort = false;
     private boolean keepPage     = false;
 
-    // Full data cache — populated once per fetch, sorted/sliced locally.
     private List<JsonObject> allItems = new ArrayList<>();
-
-    // Single stable ObservableList reused across page changes so JavaFX never resets sort state.
     private final ObservableList<JsonObject> backingList = FXCollections.observableArrayList();
 
     protected abstract void loadPage(int page, int limit);
@@ -61,7 +58,6 @@ public abstract class PagedTabController extends TabController {
         loadPage(1, 0);
     }
 
-    // Always fetches all records; page/limit args from subclasses are ignored.
     protected String pageQs(int page, int limit) {
         return "?limit=9999";
     }
@@ -73,8 +69,6 @@ public abstract class PagedTabController extends TabController {
     }
 
     protected void setTableItems(TableView<JsonObject> table, ObservableList<JsonObject> items) {
-        // Bind table to the stable backing list once; subsequent updates use setAll so JavaFX
-        // never sees a new list and never resets the sort order / sort type on the columns.
         if (table.getItems() != backingList) {
             table.setItems(backingList);
         }
@@ -104,15 +98,13 @@ public abstract class PagedTabController extends TabController {
                 if (field == null) return true;
 
                 if (field.equals(sortField)) {
-                    // Same column: ASC → DESC → clear
                     if ("ASC".equals(sortDir)) {
                         sortDir = "DESC";
                     } else {
-                        sortField     = null;
-                        sortDir       = "DESC";
+                        sortField = null;
+                        sortDir   = "DESC";
                     }
                 } else {
-                    // Different column: start with ASC
                     sortField = field;
                     sortDir   = "ASC";
                 }
@@ -121,12 +113,10 @@ public abstract class PagedTabController extends TabController {
                 sortDir   = "DESC";
             }
 
-            // Remove JavaFX native arrows — we draw our own indicators in header text.
             suppressSort = true;
             tv.getSortOrder().clear();
             suppressSort = false;
 
-            // Update header text indicators
             if (activeSortCol != null) {
                 String orig = originalHeaders.get(activeSortCol);
                 if (orig != null) activeSortCol.setText(orig);
